@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Ganador 10-N</title>
+<style>
+     @import url('https://fonts.googleapis.com/css?family=Open+Sans:200,400,600,700,800');
+    *{margin: 0; padding: 0;}
+#map {
+    width: 100%;
+    height: 700px;
+}
+.legend {
+  background-color: #ffffff;
+    border-radius: 3px;
+    bottom: 10px;
+    padding: 7px;
+    position: absolute;
+    right: 10px;
+    z-index: 1;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
+}
+.legend clearfix {
+    background-color: #ffffff;
+    border-radius: 3px;
+    bottom: 10px;
+    padding: 7px 10px 8px 5px;
+    position: absolute;
+    right: 0px;
+    z-index: 1;
+    width: 200px;
+    text-align: left;
+    box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
+}
+.legend h1 {
+    font-size: 10px;
+    font-family: OpenSans-Semibold, Open Sans;
+    font-weight: 600;
+    fill: #aeaeaf;
+    margin: 0px 0 -11px 0;
+    text-transform: uppercase;
+    text-align: left;
+}
+.legend span {
+    float: left;
+    height: 10px;
+    width: 15.9%;
+    font-size: 9px;
+    color: #aeaeaf;
+    margin-bottom: 5px;
+    padding: 2px;
+}
+.legend label {
+    font-size: 10px;
+    font-family: OpenSans-Semibold, Open Sans;
+    fill: #aeaeaf;
+    padding: 0 5px;
+    text-align: left;
+}
+</style>
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+<script type="text/javascript" src="https://rawcdn.githack.com/VangData/prova/303a4dd5dd7d718c2ecab4b40035ce5baa53e662/junto_cartodb_1_mergeb.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
+<link href='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.3/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.3/mapbox.css' rel='stylesheet' />
+<script src='https://cdn.rawgit.com/duroty/responsive/master/app.embed.js'></script>
+<body>
+
+<div id='map'>
+
+</nav></div></div><div id='geocoder' class='geocoder'></div>
+
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibGF1cjA1IiwiYSI6ImNpbmtmM2FjazAwODF2eG0yNjhteTcxdHIifQ.l7uzjVe2b1L8dHh_Z9JjoQ';
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/laur05/cjuvi3xkc8dik1fmtpwe3xjhh', 
+center:  [-4.0222, 40], // starting position [lng, lat]
+zoom: 5,// starting zoom
+minZoom: 1,
+maxZoom: 15,
+attributionControl: false,
+
+
+});
+var hoveredStateId =  null;
+var searched_lngLat = null;
+const to_ES = (number, digits=0) => number.toLocaleString("es", {
+          minimumFractionDigits: digits, 
+          maximumFractionDigits: digits} )
+
+map.on('load', function () {
+// Add a layer showing the state polygons.
+map.addSource("resultados", {
+    type: 'vector',
+    url: 'mapbox://laur05.dpb241p0',
+});
+var layers = map.getStyle().layers;
+// Find the index of the first symbol layer in the map style
+map.addLayer({
+'id': 'tiles-fills',
+'type': 'fill',
+'renderingMode': '2d',
+'source': 'resultados',
+'source-layer': 'intent26',
+'paint': {
+'fill-color': ["match", ["get","Comunidad1"],
+        "Marruecos", "#fbb03b",
+        "Rumanía", "#3bb2d0",
+        "Perú", "#18c73b",
+        "Pakistán", "#e55e5e",
+        "Brasil", "#18c73b",
+        "Francia", "#223b53",
+        "Portugal", "#223b53",
+        "RDominicana", "#18c73b",
+        "Ecuador", "#18c73b",
+        "Colombia", "#18c73b",
+        "Paraguay", "#ff9324",
+        "RestoAmerica", "#18c73b",
+        "China", "#e55e5e",
+        "ReinoUnido", "#223b53",
+        "Italia", "#223b53",
+        "RestoAfrica", "#fbb03b",
+        "Argentina", "#18c73b",
+        "Nigeria", "#fbb03b",
+        "Alemania", "#223b53",
+        "Bolivia", "#18c73b",
+        "RestoAsia", "#e55e5e",
+        "Senegal", "#fbb03b",
+        "Venezuela", "#18c73b",
+        "Bulgaria", "#3bb2d0",
+        "Ucrania", "#3bb2d0",
+        "RestoUE", "#223b53",
+        "Argelia", "#fbb03b",
+        "Cuba", "#18c73b",
+        "Rusia", "#3bb2d0",
+        "Polonia", "#223b53",
+        "Chile", "#18c73b",
+        "Uruguay", "#18c73b",
+        "OceaniaApatridas", "#323232",
+        "#d6d6d6"],
+'fill-opacity': ["interpolate", ["linear", 100], ["get", "Comunidad1v"],
+        0.00, 0.1,
+        9.9, 0.1,
+        10, 0.5,
+        24.9, 0.5,
+        25, 0.7,
+        39.9, 0.7,
+        40, 01]
+}}, "admin");
+map.addLayer({
+'id': 'tiles-borders',
+'type': 'line',
+'renderingMode': '2d',
+'source': 'resultados',
+'source-layer': 'intent26',
+'paint': {
+"line-color": ["case", ["boolean", ["feature-state", "hover"], false], "black", "white"],
+            "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2, 0]}
+    }, "admin");
+// Add zoom and rotation controls to the map.
+var nav = new mapboxgl.NavigationControl( {showCompass:false});
+map.addControl(nav, 'top-left');
+// disable map zoom when using scroll
+map.scrollZoom.disable();
+var geocoder = new MapboxGeocoder({
+countries: 'es',
+accessToken: mapboxgl.accessToken,
+mapboxgl: mapboxgl,
+types: 'region, place, locality, neighborhood, address',
+placeholder: 'Busca tu calle',
+zoom: 15,
+});
+map.addControl(geocoder, 'top-right');
+var popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+}); 
+   map.on('mousemove', 'tiles-fills', function(e) {
+    if (e.features.length > 0) {
+          if (hoveredStateId) {          
+            map.setFeatureState({ source: 'resultados', 
+                                  sourceLayer: 'intent26',
+                                  id: hoveredStateId}, { hover: false});
+          }
+          hoveredStateId = e.features[0].id;
+          map.setFeatureState({ source: 'resultados', 
+                              sourceLayer: 'intent26',
+                              id: hoveredStateId}, { hover: true});
+
+        }
+       map.getCanvas().style.cursor = 'pointer';
+ 
+                 
+                
+                
+       var coordinates = e.features[0].geometry.coordinates.slice();
+        var cusec = e.features[0].properties.CUSEC;
+        var municipio = e.features[0].properties.boMunicipio;
+        var Comunidad1 = e.features[0].properties.Comunidad1;
+        var Comunidad1v = e.features[0].properties.Comunidad1v.toLocaleString();
+        var Comunidad2 = e.features[0].properties.Comunidad2;
+        var Comunidad2v = e.features[0].properties.Comunidad2v.toLocaleString();
+        var Comunidad3 = e.features[0].properties.Comunidad3;
+        var Comunidad3v = e.features[0].properties.Comunidad3v.toLocaleString();
+        var TotalExtranjeros = e.features[0].properties.TotalExtranjeros.toLocaleString();
+
+
+
+        
+         popup.setLngLat(e.lngLat)
+            .setHTML("<div style='color:black;font-size:12px;font-family: OpenSans-bold, Open Sans; text-transform: uppercase'><b>" + municipio + "</b></br></div><div style='font-family: Open Sans, Helvetica;'>" + cusec + "</div></div><div style='font-family: Open Sans, Helvetica;'>" + TotalExtranjeros + "</div></div></div> <div style='color:black;font-size:8px;font-family: OpenSans-bold, Open Sans;'><table style='border-collapse: collapse; font-family: Open Sans;width:100%'><tbody><tr><th></th><th style='text-align:right'><span style='font-size:10px'>Porcentaje %</span></th></tr><tr style='border-bottom: 1px solid #ddd;'><td style='padding-bottom:2px;padding-top:2px'><span style='display: inline-block;width: 10px; height: 10px; margin-right: 4px;margin-bottom:-1px'></span><span style='font-size:15px;'><b>" + Comunidad1 + "</b></span></td><td style='text-align:right;padding-bottom:3px;padding-top:2px;font-size:15px;font-family: Open Sans;'<td style='text-align:right;padding-bottom:3px;padding-top:2px;font-size:12px;font-family: OpenSans-bold, Open Sans;'><b>" + Comunidad1v + "</b></span></td></tr><tr style='border-bottom: 1px solid #ddd;'><td style='padding-bottom:2px;padding-top:2px'><span style='display: inline-block;width: 10px; height: 10px; margin-right: 4px;margin-bottom:-1px'></span><span style='font-size:12px;'>" + Comunidad2 + "</td><td style='text-align:right;padding-bottom:3px;padding-top:2px;font-size:12px;'>" + Comunidad2v + "</td></tr><tr style='border-bottom: 1px solid #ddd;'><td style='padding-bottom:2px;padding-top:2px'><span style='display: inline-block;width: 10px; height: 10px; margin-right: 4px;margin-bottom:-1px'></span><span style='font-size:12px;'>" + Comunidad3 + "</td><td style='text-align:right;padding-bottom:3px;padding-top:2px;font-size:12px;'>" + Comunidad3v + "</td></tr><tr style='border-bottom: 1px solid #ddd;'></div></div>" )
+            .addTo(map);
+  });   
+        // Change the cursor style as a UI indicator.
+        
+        // Display a popup with the name of the county
+  map.on('mouseleave', 'tiles-fills', function() {
+      map.getCanvas().style.cursor = '';
+        popup.remove();
+        if (hoveredStateId) {          
+          map.setFeatureState({ source: 'resultados', 
+                                sourceLayer: 'intent26',
+                                id: hoveredStateId}, { hover: false});
+        }
+        hoveredStateId = null;
+      });
+});   
+</script>
+    </body>
+</html>
